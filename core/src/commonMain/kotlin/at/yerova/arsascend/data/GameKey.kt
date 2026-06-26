@@ -2,12 +2,19 @@ package at.yerova.arsascend.data
 
 
 object Keys {
+    val PLAYER_UUID = StringKey("player_uuid")
     val ENTITY_NAME = StringKey("entity_name")
     val CURRENT_HP = IntegerKey("current_hp")
     val IS_ALIVE = BooleanKey("is_alive")
 
     val MOVEMENT_X = FloatKey("movement_x")
     val MOVEMENT_Y = FloatKey("movement_y")
+    val POS_X = FloatKey("pos_x")
+    val POS_Y = FloatKey("pos_y")
+    val SIZE_X = FloatKey("size_x")
+    val SIZE_Y = FloatKey("size_y")
+    val RADIANT = FloatKey("radiant")
+    val ENTITY_TYPE = StringKey("entity_type")
 }
 
 

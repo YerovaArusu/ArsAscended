@@ -23,7 +23,6 @@ fun GameScreen(gameInstance: ClientGameInstance, clientId: String) {
                     x = x,
                     y = y
                 )
-
                 gameInstance.gameNetworkClient.sendMessage(command)
             }
         )

@@ -4,7 +4,7 @@ import at.yerova.arsascend.data.DataTransferObject
 import kotlinx.serialization.Serializable
 import kotlin.time.Clock
 
-const val PLACEHOLDER_NETWORK_TARGET : String = "Networking"
+const val PLACEHOLDER_NETWORK_TARGET: String = "Networking"
 
 @Serializable
 enum class MessageTargetTypes {
@@ -36,4 +36,10 @@ data class PlayerCommandMessage(
     val command: String,
     val parameters: DataTransferObject? = null,
     override val messageTarget: MessageTargetTypes = MessageTargetTypes.CLIENT_TO_SERVER
+) : NetworkMessage()
+
+@Serializable
+data class InitialSyncMessage(
+    val actorDTOs: List<DataTransferObject>,
+    override val messageTarget: MessageTargetTypes = MessageTargetTypes.SERVER_TO_CLIENT
 ) : NetworkMessage()

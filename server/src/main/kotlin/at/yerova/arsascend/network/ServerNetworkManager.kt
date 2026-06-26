@@ -1,6 +1,6 @@
 package at.yerova.arsascend.network
 
-import at.yerova.arsascend.actors.SyncingAnchor
+import at.yerova.arsascend.actors.BaseEntity
 import com.pandulapeter.kubriko.manager.ActorManager
 import com.pandulapeter.kubriko.manager.Manager
 import io.ktor.websocket.Frame
@@ -13,7 +13,7 @@ class ServerNetworkManager(val networkHandler: ServerNetworkHandler) : Manager()
         val activeSessions = ServerSessionManager.sessions.values
         if (activeSessions.isEmpty()) return
 
-        actorManager.allActors.value.filterIsInstance<SyncingAnchor>().forEach {
+        actorManager.allActors.value.filterIsInstance<BaseEntity>().forEach {
             val dto = it.extractSnapshot()
             val syncMsg = SyncMessage(entityId = it.entityId, payload = dto)
             val jsonString = NetworkParser.encode(syncMsg)

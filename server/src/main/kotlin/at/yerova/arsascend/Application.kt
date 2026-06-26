@@ -8,6 +8,11 @@ import io.ktor.server.netty.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
+import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.seconds
 
 fun main() {
@@ -19,11 +24,30 @@ fun Application.module() {
     val serverGameInstance = ServerGameInstance()
     val networkHandler = serverGameInstance.networkHandler
 
+    serverGameInstance.start()
     install(WebSockets) {
         pingPeriod = 15.seconds
         timeout = 15.seconds
         maxFrameSize = Long.MAX_VALUE
         masking = false
+    }
+
+    monitor.subscribe(ApplicationStopped) {
+        log.info("Application stopping!")
+
+        try {
+            ServerSessionManager.sessions.values.forEach { session ->
+                CoroutineScope(Dispatchers.IO).launch {
+                    session.close(CloseReason(CloseReason.Codes.GOING_AWAY, "Server Closed!"))
+                }
+            }
+
+            //TODO: Do Game Instance Server shutdown.
+            serverGameInstance.dispose()
+
+        } catch (e: Exception) {
+            log.error("Error while Shutting down! ${e.message}")
+        }
     }
 
     routing {
@@ -40,12 +64,12 @@ fun Application.module() {
 
             val existingSession = ServerSessionManager.sessions[clientId]
             if (existingSession != null) {
-                println("Server: Warnung! Client [$clientId] verbindet sich neu. Alte Session wird gekickt.")
+                log.warn("Client [$clientId] is reconnecting. Old Session will be disposed.")
                 existingSession.close(CloseReason(CloseReason.Codes.NORMAL, "Logged in from another location"))
             }
 
             ServerSessionManager.sessions[clientId] = this
-            println("Server: Client verbunden [$clientId] (Name: $playerName, Version: $clientVersion)")
+            log.error("Connected client [$clientId] (Name: $playerName, Version: $clientVersion)!")
 
             try {
                 for (frame in incoming) {
@@ -55,11 +79,11 @@ fun Application.module() {
                     }
                 }
             } catch (e: Exception) {
-                println("Server: Verbindung beendet [$clientId]: ${e.message}")
+                log.error("Connection for Client [$clientId] stopped: ${e.message}")
             } finally {
                 if (ServerSessionManager.sessions[clientId] == this) {
                     ServerSessionManager.sessions.remove(clientId)
-                    println("Server: Client endgültig getrennt [$clientId]")
+                    log.info("Session for Client [$clientId] closed")
                 }
             }
         }

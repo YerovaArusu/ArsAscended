@@ -5,7 +5,6 @@ import com.pandulapeter.kubriko.manager.StateManager
 import com.pandulapeter.kubriko.physics.PhysicsManager
 
 open class BaseGameInstance {
-    // 1. Core Logic Managers
     val stateManager by lazy {
         StateManager.newInstance(
             shouldAutoStart = true,
@@ -14,7 +13,6 @@ open class BaseGameInstance {
         )
     }
 
-    // 2. Physics & Collision (Die "Wahrheit")
     val physicsManager by lazy {
         PhysicsManager.newInstance(
             initialSimulationSpeed = 1f,

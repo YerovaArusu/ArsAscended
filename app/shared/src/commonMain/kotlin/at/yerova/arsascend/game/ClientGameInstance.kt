@@ -1,5 +1,6 @@
 package at.yerova.arsascend.game
 
+import androidx.compose.runtime.remember
 import at.yerova.arsascend.network.ClientNetworkManager
 import at.yerova.arsascend.network.ClientNetworkHandler
 import at.yerova.arsascend.network.GameNetworkClient
@@ -10,8 +11,13 @@ import com.pandulapeter.kubriko.manager.ViewportManager
 import com.pandulapeter.kubriko.shaders.ShaderManager
 import com.pandulapeter.kubriko.sprites.SpriteManager
 
-class ClientGameInstance : BaseGameInstance() {
-    val actorManager by lazy { ActorManager.newInstance(shouldPutFarAwayActorsToSleep = true) }
+class ClientGameInstance(private val clientId: String) : BaseGameInstance() {
+    val actorManager by lazy {
+        ActorManager.newInstance(
+            //initialActors = , TODO: Implement something so that when we join, we wait until the current Server state is present on the client.
+            shouldPutFarAwayActorsToSleep = true
+        )
+    }
 
     val spriteManager by lazy { SpriteManager.newInstance() }
     val shaderManager by lazy { ShaderManager.newInstance() }
@@ -26,7 +32,8 @@ class ClientGameInstance : BaseGameInstance() {
 
     val networkHandler = ClientNetworkHandler()
     val clientNetworkManager by lazy { ClientNetworkManager(networkHandler) }
-    val clientGameplayManager by lazy { ClientGameplayManager() }
+
+    val clientGameplayManager by lazy { ClientGameplayManager(clientId) }
 
     val gameNetworkClient = GameNetworkClient(networkHandler)
 

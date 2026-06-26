@@ -18,6 +18,7 @@ logback = "1.5.34"
 material3 = "1.11.0-alpha07"
 kubriko = "0.4.1"
 navigationCompose = "2.9.2"
+kermit = "2.0.4"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -60,6 +61,8 @@ kubriko-plugin-persistence = { module = "io.github.pandulapeter.kubriko:plugin-p
 kubriko-plugin-physics = { module = "io.github.pandulapeter.kubriko:plugin-physics", version.ref = "kubriko" }
 kubriko-plugin-shaders = { module = "io.github.pandulapeter.kubriko:plugin-shaders", version.ref = "kubriko" }
 kubriko-plugin-sprites = { module = "io.github.pandulapeter.kubriko:plugin-sprites", version.ref = "kubriko" }
+
+kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

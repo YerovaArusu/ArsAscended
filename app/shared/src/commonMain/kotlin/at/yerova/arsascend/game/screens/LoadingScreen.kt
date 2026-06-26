@@ -32,7 +32,7 @@ fun LoadingScreen(onLoadingFinished: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(Color.DarkGray)
     ) {
         Image(
             painter = painterResource(Res.drawable.yerova_logo),

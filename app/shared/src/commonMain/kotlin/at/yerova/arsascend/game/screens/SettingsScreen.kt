@@ -36,6 +36,7 @@ fun SettingsScreen(
                 .padding(32.dp),
             horizontalAlignment = Alignment.Start
         ) {
+            //Example. Not sure if this shall be implemented.
             Text("Audio", style = MaterialTheme.typography.titleLarge)
             
             Spacer(modifier = Modifier.height(16.dp))

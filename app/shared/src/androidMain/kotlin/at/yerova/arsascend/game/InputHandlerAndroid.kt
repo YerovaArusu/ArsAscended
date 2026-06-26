@@ -27,8 +27,6 @@ actual class InputHandler actual constructor(
     @Composable
     actual fun RenderOverlay() {
         Box(modifier = Modifier.fillMaxSize()) {
-
-            // Unten links mit etwas Abstand zum Rand
             JoyStick(
                 modifier = Modifier
                     .align(Alignment.BottomStart)

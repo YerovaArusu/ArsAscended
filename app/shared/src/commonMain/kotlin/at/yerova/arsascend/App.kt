@@ -24,7 +24,7 @@ fun App() {
         val clientId = remember { UUID.randomUUID().toString() }
 
         // Wir erstellen EINE Game-Instance für die gesamte Lebensdauer der App
-        val gameInstance = remember { ClientGameInstance() }
+        val gameInstance = remember { ClientGameInstance(clientId) }
 
         // Scope für asynchrone Netzwerk-Aufrufe (Ktor) aus dem UI heraus
         val coroutineScope = rememberCoroutineScope()

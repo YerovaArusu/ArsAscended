@@ -16,7 +16,6 @@ fun ConnectScreen(
     onConnectRequest: (ip: String, playerName: String) -> Unit,
     onNavigateBack: () -> Unit
 ) {
-    // Lokaler State für die Textfelder
     var serverIp by remember { mutableStateOf("127.0.0.1:8080") }
     var playerName by remember { mutableStateOf("Hero") }
 

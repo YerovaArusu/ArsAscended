@@ -29,7 +29,7 @@ class GameNetworkClient(private val networkHandler: ClientNetworkHandler) {
             session = client.webSocketSession(
                 urlString = "ws://$serverIp/game?clientId=$clientId&version=$version&playerName=$playerName"
             )
-            
+
             startListening()
             true
         } catch (e: Exception) {

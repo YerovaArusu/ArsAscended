@@ -1,5 +1,6 @@
 package at.yerova.arsascend.network
 
+import co.touchlab.kermit.Logger
 import com.pandulapeter.kubriko.Kubriko
 import com.pandulapeter.kubriko.manager.Manager
 
@@ -12,9 +13,16 @@ class ClientNetworkManager(val networkHandler: ClientNetworkHandler) : Manager()
         if (timeSinceLastServerUpdate > 3000) {
             // TODO: UI Manager benachrichtigen: "Zeige Verbindungsabbruch-Symbol"
         }
+
+        processNetworkQueue()
     }
 
-    fun onPacketReceived() {
-        timeSinceLastServerUpdate = 0
+    private fun processNetworkQueue() {
+        while (true) {
+            ClientNetworkHandler.ClientMessageQueue.pendingMessages.peek() ?: break
+
+            NetworkEventBus.publish(ClientNetworkHandler.ClientMessageQueue.pendingMessages.poll())
+            timeSinceLastServerUpdate = 0
+        }
     }
 }

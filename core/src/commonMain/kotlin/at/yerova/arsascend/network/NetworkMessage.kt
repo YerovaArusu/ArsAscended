@@ -43,3 +43,15 @@ data class InitialSyncMessage(
     val actorDTOs: List<DataTransferObject>,
     override val messageTarget: MessageTargetTypes = MessageTargetTypes.SERVER_TO_CLIENT
 ) : NetworkMessage()
+
+@Serializable
+data class SpawnEntityMessage(
+    val entityDto: DataTransferObject,
+    override val messageTarget: MessageTargetTypes = MessageTargetTypes.SERVER_TO_CLIENT
+) : NetworkMessage()
+
+@Serializable
+data class DespawnEntityMessage(
+    val entityId: String,
+    override val messageTarget: MessageTargetTypes = MessageTargetTypes.SERVER_TO_CLIENT
+) : NetworkMessage()

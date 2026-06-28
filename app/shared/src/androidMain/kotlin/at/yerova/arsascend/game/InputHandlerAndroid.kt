@@ -8,6 +8,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -19,24 +20,38 @@ import kotlin.math.hypot
 import kotlin.math.sin
 
 actual class InputHandler actual constructor(
-    private val onInputChanged: (x: Float, y: Float) -> Unit
+    private val onInputChanged: (x: Float, y: Float) -> Unit,
+    private val onLookChanged: (aimX: Float, aimY: Float) -> Unit,
+    private val onActionTriggered: (actionType: String, screenX: Float, screenY: Float) -> Unit
 ) {
     private var lastSentX = 0f
     private var lastSentY = 0f
 
     @Composable
     actual fun RenderOverlay() {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                // Auf Mobilgeräten triggert ein Fingertipp direkt die Fähigkeit
+                .pointerInput(Unit) {
+                    detectTapGestures { offset ->
+                        onActionTriggered("SKILL_POISON_POOL", offset.x, offset.y)
+                    }
+                }
+        ) {
             JoyStick(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(32.dp),
                 size = 140.dp,
                 onMove = { x, y ->
-                    if (abs(x - lastSentX) > 0.05f || abs(y - lastSentY) > 0.05f) {
+                    if (kotlin.math.abs(x - lastSentX) > 0.05f || kotlin.math.abs(y - lastSentY) > 0.05f) {
                         lastSentX = x
                         lastSentY = y
                         onInputChanged(x, y)
+
+                        // Auf Mobile nutzen wir oft die Bewegungsrichtung auch als Blickrichtung
+                        onLookChanged(x, y)
                     }
                 },
                 onRelease = {

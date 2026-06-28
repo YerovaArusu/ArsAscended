@@ -15,6 +15,8 @@ object Keys {
     val SIZE_Y = FloatKey("size_y")
     val RADIANT = FloatKey("radiant")
     val ENTITY_TYPE = StringKey("entity_type")
+    val TARGET_X = FloatKey("target_x")
+    val TARGET_Y = FloatKey("target_y")
 }
 
 

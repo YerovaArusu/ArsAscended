@@ -3,8 +3,9 @@ package at.yerova.arsascend.game.screens
 import kotlinx.serialization.Serializable
 
 @Serializable
-object LoadingRoute
-
+object StartUpScreen
+@Serializable
+object SyncLoadingScreen
 @Serializable
 object MainMenuRoute
 

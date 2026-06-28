@@ -2,12 +2,17 @@ package at.yerova.arsascend.game
 
 import at.yerova.arsascend.actors.BaseEntity
 import at.yerova.arsascend.actors.PlayerEntity
+import at.yerova.arsascend.actors.TestEntity
 import at.yerova.arsascend.data.DataTransferObject
 import at.yerova.arsascend.data.Keys
+import at.yerova.arsascend.network.ClientNetworkHandler
+import at.yerova.arsascend.network.DespawnEntityMessage
 import at.yerova.arsascend.network.EventSubscription
 import at.yerova.arsascend.network.InitialSyncMessage
 import at.yerova.arsascend.network.NetworkEventBus
+import at.yerova.arsascend.network.SpawnEntityMessage
 import co.touchlab.kermit.Logger
+import co.touchlab.kermit.loggerConfigInit
 import com.pandulapeter.kubriko.Kubriko
 import com.pandulapeter.kubriko.manager.ActorManager
 import com.pandulapeter.kubriko.manager.Manager
@@ -17,14 +22,33 @@ class ClientGameplayManager(private val clientId: String) : Manager() {
 
     private val actorManager by manager<ActorManager>()
     private val viewportManager by manager<ViewportManager>()
-    private var syncSubscription: EventSubscription? = null
+
+    private val subscribedMessages = mutableListOf<EventSubscription>()
 
     override fun onInitialize(kubriko: Kubriko) {
         Logger.i("Client World is loading!")
 
-        syncSubscription = NetworkEventBus.subscribe<InitialSyncMessage> { message ->
-            handleInitialSync(message)
-        }
+        subscribedMessages.add(NetworkEventBus.subscribe<SpawnEntityMessage> { message ->
+            Logger.i("Ein neues Entity ist gespawnt: ${message.entityDto.identifier}")
+
+            val newEntity = ClientNetworkHandler.EntityFactory.createFromDto(message.entityDto)
+            if (newEntity != null) {
+                actorManager.add(newEntity)
+            }
+        })
+
+        subscribedMessages.add(NetworkEventBus.subscribe<DespawnEntityMessage> { message ->
+            Logger.i("Entity despawnt: ${message.entityId}")
+
+            // Finde das Entity und lösche es aus dem Client
+            val entityToRemove = actorManager.allActors.value
+                .filterIsInstance<BaseEntity>()
+                .find { it.entityId == message.entityId }
+
+            if (entityToRemove != null) {
+                actorManager.remove(entityToRemove)
+            }
+        })
     }
 
     override fun onUpdate(deltaTimeInMilliseconds: Int) {
@@ -38,45 +62,9 @@ class ClientGameplayManager(private val clientId: String) : Manager() {
     }
 
     override fun onDispose() {
-        syncSubscription?.unsubscribe()
-    }
-    private fun handleInitialSync(message: InitialSyncMessage) {
-        Logger.i("Empfange Initial-Sync vom Server! ${message.actorDTOs.size} Entities.")
-
-        // 2. Erzeuge alle Entities aus den DTOs
-        val newEntities = message.actorDTOs.mapNotNull { dto ->
-            EntityFactory.createFromDto(dto, clientId)
-        }
-
-        // 3. Wenn wir schon Actors haben (z.B. nach einem Reconnect),
-        // sollten wir die alten vielleicht erst löschen
-        actorManager.removeAll()
-
-        // 4. Füge die neuen Entities alle auf einmal zur Engine hinzu
-        actorManager.add(newEntities)
-
-        Logger.i("Initial-Sync abgeschlossen. Welt aufgebaut.")
-    }
-
-
-
-    object EntityFactory {
-        fun createFromDto(dto: DataTransferObject, clientUuid: String): BaseEntity? {
-            val type = dto.get(Keys.ENTITY_TYPE, "")
-
-            return when (type) {
-                "PlayerEntity" -> {
-                    val uuid = dto.get(Keys.PLAYER_UUID, "")
-                    PlayerEntity(playerUUID = uuid, entityId = dto.identifier).apply {
-                        applySyncUpdate(dto) // Setzt direkt die richtige Position!
-                    }
-                }
-
-                else -> {
-                    Logger.e("Unknown Entity: $type")
-                    null
-                }
-            }
+        for (subscription in subscribedMessages) {
+            subscription.unsubscribe()
         }
     }
+
 }

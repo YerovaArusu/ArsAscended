@@ -38,16 +38,16 @@ fun SettingsScreen(
         ) {
             //Example. Not sure if this shall be implemented.
             Text("Audio", style = MaterialTheme.typography.titleLarge)
-            
+
             Spacer(modifier = Modifier.height(16.dp))
-            
+
             Text("Gesamtlautstärke")
             Slider(
                 value = masterVolume,
                 onValueChange = { masterVolume = it },
                 modifier = Modifier.fillMaxWidth(0.8f)
             )
-            
+
             // Hier ist Platz für weitere Einstellungen (Auflösung, Steuerung etc.)
         }
     }

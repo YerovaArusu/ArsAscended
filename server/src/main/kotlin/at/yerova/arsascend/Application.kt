@@ -69,7 +69,7 @@ fun Application.module() {
             }
 
             ServerSessionManager.sessions[clientId] = this
-            log.error("Connected client [$clientId] (Name: $playerName, Version: $clientVersion)!")
+            log.info("Connected client [$clientId] (Name: $playerName, Version: $clientVersion)!")
 
             try {
                 for (frame in incoming) {

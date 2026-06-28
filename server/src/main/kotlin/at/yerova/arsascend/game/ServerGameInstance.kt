@@ -3,7 +3,6 @@ package at.yerova.arsascend.game
 import at.yerova.arsascend.network.ServerNetworkHandler
 import at.yerova.arsascend.network.ServerNetworkManager
 import com.pandulapeter.kubriko.Kubriko
-import com.pandulapeter.kubriko.helpers.TickSource
 import com.pandulapeter.kubriko.manager.ActorManager
 import org.slf4j.LoggerFactory
 
@@ -22,8 +21,6 @@ class ServerGameInstance : BaseGameInstance() {
             instanceNameForLogging = "ServerActors"
         )
     }
-    // 20 Ticks = 50ms per Tick (Just like the Minecraft-Standard)
-    private val tickSource = TickSource.fixedFrequency(20)
 
     val kubriko by lazy {
         Kubriko.newInstance(
@@ -33,18 +30,18 @@ class ServerGameInstance : BaseGameInstance() {
             collisionManager,
             serverNetworkManager,
             serverGameplayManager,
-            tickSource = tickSource
+            tickSource = engineTickSource
         )
     }
 
     fun start() {
         logger.info("Starting Server Game-Instance")
         kubriko
-        tickSource.start()
+        engineTickSource.start()
     }
 
     fun dispose() {
         kubriko.dispose()
-        tickSource.stop()
+        engineTickSource.stop()
     }
 }

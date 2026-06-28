@@ -8,12 +8,12 @@ plugins {
 
 kotlin {
     jvm()
-    
+
     androidLibrary {
        namespace = "at.yerova.arsascend.core"
        compileSdk = libs.versions.android.compileSdk.get().toInt()
        minSdk = libs.versions.android.minSdk.get().toInt()
-    
+
        compilerOptions {
            jvmTarget = JvmTarget.JVM_26
        }
@@ -24,7 +24,7 @@ kotlin {
            isIncludeAndroidResources = true
        }
     }
-    
+
     sourceSets {
         commonMain.dependencies {
             api(libs.kubriko.engine)

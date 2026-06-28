@@ -1,5 +1,8 @@
 package at.yerova.arsascend.actors
 
+import at.yerova.arsascend.EntityAddedEvent
+import at.yerova.arsascend.EntityRemovedEvent
+import at.yerova.arsascend.LocalGameEventBus
 import at.yerova.arsascend.data.DataTransferObject
 import at.yerova.arsascend.data.Keys
 import at.yerova.arsascend.network.EventSubscription
@@ -36,12 +39,14 @@ abstract class BaseEntity(
         }
 
         subscriptions.add(syncSub)
+        LocalGameEventBus.publish(EntityAddedEvent(this))
     }
 
     override fun onRemoved() {
         println("Removed Anchor '$entityId'! Unsubscribed from Network!")
         subscriptions.forEach { it.unsubscribe() }
         subscriptions.clear()
+        LocalGameEventBus.publish(EntityRemovedEvent(this))
     }
 
     fun extractSnapshot(): DataTransferObject {

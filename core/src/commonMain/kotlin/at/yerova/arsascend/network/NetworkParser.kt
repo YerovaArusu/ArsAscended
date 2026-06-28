@@ -4,7 +4,7 @@ import kotlinx.serialization.json.Json
 
 object NetworkParser {
 
-    val jsonFormat = Json { 
+    val jsonFormat = Json {
         ignoreUnknownKeys = true
         classDiscriminator = "type"
     }

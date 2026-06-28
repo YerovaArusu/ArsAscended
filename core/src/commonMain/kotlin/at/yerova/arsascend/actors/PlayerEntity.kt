@@ -1,5 +1,6 @@
 package at.yerova.arsascend.actors
 
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import at.yerova.arsascend.data.DataTransferObject
@@ -35,8 +36,8 @@ class PlayerEntity(
 
     override fun DrawScope.draw() {
         drawRect(
-            color = Color.Red,
-            size = androidx.compose.ui.geometry.Size(body.size.width.raw, body.size.height.raw)
+            color = Color.Green,
+            size = Size(body.size.width.raw, body.size.height.raw)
         )
     }
 

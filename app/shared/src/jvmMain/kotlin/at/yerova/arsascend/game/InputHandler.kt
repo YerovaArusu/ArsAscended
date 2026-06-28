@@ -16,17 +16,21 @@ import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.isPrimaryPressed
+import androidx.compose.ui.input.pointer.onPointerEvent
 
 actual class InputHandler actual constructor(
-    private val onInputChanged: (x: Float, y: Float) -> Unit
+    private val onInputChanged: (x: Float, y: Float) -> Unit,
+    private val onLookChanged: (aimX: Float, aimY: Float) -> Unit,
+    private val onActionTriggered: (actionType: String, screenX: Float, screenY: Float) -> Unit
 ) {
     private var currentX = 0f
     private var currentY = 0f
 
     @OptIn(ExperimentalComposeUiApi::class)
     @Composable
-    actual fun RenderOverlay() {
-        val focusRequester = remember { FocusRequester() }
+    actual fun RenderOverlay() {val focusRequester = remember { FocusRequester() }
 
         Box(
             modifier = Modifier
@@ -35,6 +39,18 @@ actual class InputHandler actual constructor(
                 .focusable()
                 .onKeyEvent { keyEvent ->
                     handleKeyEvent(keyEvent)
+                }
+                .onPointerEvent(PointerEventType.Move) { pointerEvent ->
+                    val position = pointerEvent.changes.first().position
+                    onLookChanged(position.x, position.y)
+                }
+                .onPointerEvent(PointerEventType.Press) { pointerEvent ->
+                    val change = pointerEvent.changes.first()
+                    val position = change.position
+
+                    if (pointerEvent.buttons.isPrimaryPressed) {
+                        onActionTriggered("SKILL_POISON_POOL", position.x, position.y)
+                    }
                 }
         )
 

@@ -3,7 +3,6 @@ package at.yerova.arsascend.game.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,7 +21,7 @@ import arsascend.app.shared.generated.resources.* // Deine Bilder
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
-fun LoadingScreen(onLoadingFinished: () -> Unit) {
+fun StartUpScreen(onLoadingFinished: () -> Unit) {
 
     LaunchedEffect(Unit) {
         delay(3000.milliseconds)

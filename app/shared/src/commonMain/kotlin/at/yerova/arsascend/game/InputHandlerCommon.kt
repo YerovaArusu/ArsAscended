@@ -6,11 +6,10 @@ import at.yerova.arsascend.data.DataTransferObject
 import at.yerova.arsascend.data.Keys
 
 expect class InputHandler(
-    onInputChanged: (x: Float, y: Float) -> Unit
+    onInputChanged: (x: Float, y: Float) -> Unit,
+    onLookChanged: (aimX: Float, aimY: Float) -> Unit,
+    onActionTriggered: (actionType: String, screenX: Float, screenY: Float) -> Unit
 ) {
-    /**
-     * Das Compose-Overlay, das über dem Kubriko-Canvas gerendert wird.
-     */
     @Composable
     fun RenderOverlay()
 }
